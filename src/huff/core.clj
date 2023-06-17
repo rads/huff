@@ -111,11 +111,13 @@
 (defn emit-style [sb s]
   (.append ^StringBuilder sb "style=\"")
   (cond
-    (map? s) (doseq [[k v] (sort-by first s)]
-               [(.append ^StringBuilder sb (name k))
-                (.append ^StringBuilder sb ":")
-                (.append ^StringBuilder sb (stringify v))
-                (.append ^StringBuilder sb ";")])
+    (map? s) (loop [[[k v] & pairs] (sort-by first s)]
+               (.append ^StringBuilder sb (name k))
+               (.append ^StringBuilder sb ":")
+               (.append ^StringBuilder sb (stringify v))
+               (when (seq pairs)
+                 (.append ^StringBuilder sb ";")
+                 (recur pairs)))
     (string? s) (.append ^StringBuilder sb s)
     :else (throw (ex-info "style attributes need to be a string or a map." {:s s})))
   (.append ^StringBuilder sb "\""))
