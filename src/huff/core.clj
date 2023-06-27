@@ -203,7 +203,9 @@
     (emit ^StringBuilder sb c)))
 
 (defmethod emit :component-node [sb [_ {:keys [view-fxn children]}]]
-  (emit sb (parser (apply view-fxn children))))
+  (let [nodes (apply view-fxn children)
+        nodes (if (fn? nodes) (apply nodes children) nodes)]
+    (emit sb (parser nodes))))
 
 (defn html [h]
   (let [parsed (parser h)]
