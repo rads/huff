@@ -15,7 +15,7 @@
                [:siblings-node [:catn [:children [:* [:schema [:ref "hiccup"]]]]]]
                [:tag-node       [:catn
                                  [:tag      simple-keyword?]
-                                 [:attrs    [:map-of [:or :string :keyword :symbol] :any]]
+                                 [:attrs    [:map-of [:or :string :keyword :symbol fn?] :any]]
                                  [:children [:* [:schema [:ref "hiccup"]]]]]]
                [:tag-node-no-attrs [:catn
                                     [:tag      simple-keyword?]
@@ -129,6 +129,9 @@
       (cond
         (= :style k)
         (emit-style sb value)
+
+        (fn? value)
+        (comment "no-op")
 
         (coll? value)
         (do (.append ^StringBuilder sb (stringify k))
